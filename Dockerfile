@@ -10,8 +10,7 @@ WORKDIR /var/chatgpt-api
 RUN npm install
 
 ENV API_HOST=0.0.0.0
-ENV OPENAI_API_KEY=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
-
+ENV OPENAI_API_KEY=
 EXPOSE 3000
 
 ENTRYPOINT npm start
