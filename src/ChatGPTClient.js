@@ -12,7 +12,9 @@ const tokenizersCache = {};
 export default class ChatGPTClient {
     constructor(
         apiKey,
-        options = {},
+        options = {
+            debug: true,
+        },
         cacheOptions = {},
     ) {
         this.apiKey = apiKey;
@@ -268,7 +270,7 @@ export default class ChatGPTClient {
     async generateTitle(userMessage, botMessage) {
         const instructionsPayload = {
             role: 'system',
-            content: `Write an extremely concise subtitle for this conversation with no more than a few words. All words should be capitalized. Exclude punctuation.
+            content: `You are an AI assistant for a hotel website helping users find rooms, make reservations, and provide local recommendations.
 
 ||>Message:
 ${userMessage.message}
@@ -281,7 +283,7 @@ ${botMessage.message}
         const titleGenClientOptions = JSON.parse(JSON.stringify(this.options));
         titleGenClientOptions.modelOptions = {
             model: 'gpt-3.5-turbo',
-            temperature: 0,
+            temperature: 0.8,
             presence_penalty: 0,
             frequency_penalty: 0,
         };
@@ -320,7 +322,7 @@ ${botMessage.message}
         const userMessage = {
             id: crypto.randomUUID(),
             parentMessageId,
-            role: 'User',
+            role: 'Potential booker',
             message,
         };
         conversation.messages.push(userMessage);
@@ -385,7 +387,8 @@ ${botMessage.message}
         const replyMessage = {
             id: crypto.randomUUID(),
             parentMessageId: userMessage.id,
-            role: 'ChatGPT',
+            role: 'system',
+            content: 'You are an AI assistant for a hotel website helping users find rooms, make reservations, and provide local recommendations',
             message: reply,
         };
         conversation.messages.push(replyMessage);
@@ -407,6 +410,9 @@ ${botMessage.message}
 
         return returnData;
     }
+    // ...
+
+    // ...
 
     async buildPrompt(messages, parentMessageId, isChatGptModel = false) {
         const orderedMessages = this.constructor.getMessagesForConversation(messages, parentMessageId);

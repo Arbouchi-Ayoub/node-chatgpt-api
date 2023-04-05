@@ -8,6 +8,14 @@ import { KeyvFile } from 'keyv-file';
 import ChatGPTClient from '../src/ChatGPTClient.js';
 import ChatGPTBrowserClient from '../src/ChatGPTBrowserClient.js';
 import BingAIClient from '../src/BingAIClient.js';
+// import fastify-swagger
+import swagger from '@fastify/swagger';
+
+// const swaggerUi = require('swagger-ui-express');
+// import swaggerUi from 'swagger-ui-express';
+// const swaggerFile = require('./swagger_output.json');
+// import swaggerFile from '../swagger/swagger_output.json?type=json';
+
 
 const arg = process.argv.find(_arg => _arg.startsWith('--settings'));
 const path = arg?.split('=')[1] ?? './settings.js';
@@ -39,11 +47,23 @@ if (settings.storageFilePath && !settings.cacheOptions.store) {
     settings.cacheOptions.store = new KeyvFile({ filename: settings.storageFilePath });
 }
 
-const clientToUse = settings.apiOptions?.clientToUse || settings.clientToUse || 'chatgpt';
+const clientToUse = settings.apiOptions?.clientToUse || settings.clientToUse || 'CustomerSupport';
 const perMessageClientOptionsWhitelist = settings.apiOptions?.perMessageClientOptionsWhitelist || null;
 
-const server = fastify();
 
+const server = fastify({
+    logger: settings.apiOptions?.debug,
+});
+//swagger aoi doc
+server.register(swagger, {
+    routePrefix: '/apidocs',
+    exposeRoute: true,
+    mode: 'static',
+    specification: {
+        path: './swagger_output.json',
+        noAdditional: false,
+    },
+  });
 await server.register(FastifySSEPlugin);
 await server.register(cors, {
     origin: '*',
@@ -154,6 +174,7 @@ server.post('/conversation', async (request, reply) => {
     return reply.code(code).send({ error: message });
 });
 
+// server.use('/api-docs', swaggerUi.serve, swaggerUi.setup('../swagger/swagger_output.json?type=json'));
 server.listen({
     port: settings.apiOptions?.port || settings.port || 3000,
     host: settings.apiOptions?.host || 'localhost',

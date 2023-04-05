@@ -1,0 +1,79 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "My API",
+    "description": "My API description",
+    "version": "1.0.0"
+  },
+  "host": "localhost:3000",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/ping": {
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/conversation": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "stream": {
+                  "example": "any"
+                },
+                "message": {
+                  "example": "any"
+                },
+                "clientOptions": {
+                  "example": "any"
+                },
+                "jailbreakConversationId": {
+                  "example": "any"
+                },
+                "conversationId": {
+                  "example": "any"
+                },
+                "parentMessageId": {
+                  "example": "any"
+                },
+                "conversationSignature": {
+                  "example": "any"
+                },
+                "clientId": {
+                  "example": "any"
+                },
+                "invocationId": {
+                  "example": "any"
+                },
+                "toneStyle": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  }
+}
